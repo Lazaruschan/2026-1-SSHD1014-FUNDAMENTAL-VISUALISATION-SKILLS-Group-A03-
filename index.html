@@ -150,6 +150,36 @@
             </div>
         </div>
 
+        <!-- TUTORIALS TAB -->
+        <div id="tutorials" class="tab-content space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h2 id="tutorials-heading" class="text-2xl font-bold text-black mb-2">Online Tutorials</h2>
+                <p id="tutorials-note" class="text-gray-600 mb-6"></p>
+                <div id="tutorials-container" class="grid gap-3">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div id="tutorials-preview-panel" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 border-b border-gray-200 bg-gray-50">
+                    <div class="min-w-0">
+                        <p class="text-xs font-bold uppercase tracking-wider text-gray-500">YouTube</p>
+                        <p id="tutorials-preview-title" class="font-semibold text-gray-800 truncate">Select a tutorial to watch</p>
+                    </div>
+                </div>
+                <div id="tutorials-preview-empty"
+                    class="aspect-video bg-gray-100 flex flex-col items-center justify-center text-gray-500 text-sm p-6 text-center gap-3">
+                    <i class="fab fa-youtube text-4xl text-gray-300"></i>
+                    <p>Online tutorial videos are <span class="font-semibold">coming soon</span>.</p>
+                </div>
+                <iframe id="tutorials-preview-frame" title="Tutorial video preview"
+                    class="hidden w-full aspect-video bg-black border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+
         <!-- RESOURCES TAB -->
         <div id="resources" class="tab-content space-y-8">
             <section id="resources-downloads"
@@ -195,6 +225,7 @@
                 { id: "schedule", label: "Schedule", icon: "fas fa-calendar-alt", enabled: true },
                 { id: "assessments", label: "Assessments", icon: "fas fa-file-alt", enabled: true },
                 { id: "slides", label: "Slides", icon: "fas fa-images", enabled: true },
+                { id: "tutorials", label: "Online Tutorial", icon: "fab fa-youtube", enabled: true },
                 { id: "resources", label: "Resources", icon: "fas fa-download", enabled: true }
             ],
 
@@ -267,9 +298,7 @@
                             "Visual composition: considered use of geometric shapes, colour, and spatial arrangement.",
                             "Creativity and originality with limited visual elements.",
                             "Submit: single PDF (hand-drawn or digital) with name, student number, and short story concept."
-                        ],
-                        downloadUrl: "assets/briefs/Assignment1_Storyboard_Development.pdf",
-                        downloadLabel: "Download brief (PDF)"
+                        ]
                     },
                     {
                         name: "Individual Assignment 2 — Digital Animation",
@@ -281,9 +310,7 @@
                             "Visual development using shape, movement, colour, and timing.",
                             "Programming concepts: variables, loops, conditionals, or functions.",
                             "Include interactivity or clear procedural variation; submit video (≤60s), source code, and short reflection."
-                        ],
-                        downloadUrl: "assets/briefs/Assignment2_Digital_Animation.pdf",
-                        downloadLabel: "Download brief (PDF)"
+                        ]
                     },
                     {
                         name: "Individual Assignment 3 — Redesigning a Walking Path",
@@ -295,9 +322,7 @@
                             "Clear design concept addressing user experience, atmosphere, or function.",
                             "Time-based or interactive visualisation in Processing or Blender.",
                             "Submit: final output, 5–7 presentation slides, source files, and ~300-word reflection."
-                        ],
-                        downloadUrl: "assets/briefs/Assignment3_Redesigning_a_Walking_Path.pdf",
-                        downloadLabel: "Download brief (PDF)"
+                        ]
                     }
                 ],
                 plagiarism: "You are strongly advised to pay attention to the rules and guidance notes regarding plagiarism, how sources should be referred to, and bibliography referencing as stipulated in the Student Handbook. The College may take disciplinary actions against students when there is evidence of collusion. All included work of others must be attributed to its source. Extensive copy-pasting from AI-generated content without citation is considered plagiarism."
@@ -325,18 +350,36 @@
                 ]
             },
 
+            // --- Online Tutorials (YouTube) ---
+            tutorials: {
+                heading: "Online Tutorials",
+                note: "Week-by-week YouTube tutorials will be posted here. All sessions are coming soon.",
+                comingSoon: true,
+                videos: [
+                    { week: 1, title: "Digital Production in the 21st Century" },
+                    { week: 2, title: "Shape, Form, Colour and Symbol in Design" },
+                    { week: 3, title: "Visualisation and Basic Design Principles" },
+                    { week: 4, title: "Digital Imaging and Basic Programming I" },
+                    { week: 5, title: "Basics of Programming II" },
+                    { week: 6, title: "Basics of Programming III" },
+                    { week: 7, title: "Image Processing with Code" },
+                    { week: 8, title: "Perspectives: History & Spatial Seeing" },
+                    { week: 9, title: "Perspectives: Constructing Depth" },
+                    { week: 10, title: "Perspectives: Multi-Point & Material Depth" },
+                    { week: 11, title: "Designers and AI Collaboration" },
+                    { week: 12, title: "Assignment 3 Consultation" },
+                    { week: 13, title: "Final Presentation" }
+                ]
+            },
+
             // --- Resources ---
             resources: {
                 badge: "Course Materials",
-                title: "Slides & Assessment Briefs",
-                description: "Open HTML lecture slides (weeks 1–11) and download assignment briefs for storyboard, Processing animation, and the walking-path project.",
-                repoUrl: "slides/week-01.html",
-                repoLabel: "Open Week 1 lecture slides",
-                downloads: [
-                    { label: "Assignment 1 Brief (PDF)", url: "assets/briefs/Assignment1_Storyboard_Development.pdf" },
-                    { label: "Assignment 2 Brief (PDF)", url: "assets/briefs/Assignment2_Digital_Animation.pdf" },
-                    { label: "Assignment 3 Brief (PDF)", url: "assets/briefs/Assignment3_Redesigning_a_Walking_Path.pdf" }
-                ],
+                title: "Slides & Reading",
+                description: "Open HTML lecture slides (weeks 1–11) from the Slides tab, and open the Introduction to Processing textbook here.",
+                repoUrl: "assets/textbooks/Introduction-to-Processing.pdf",
+                repoLabel: "Open Introduction to Processing (PDF)",
+                downloads: [],
                 software: [
                     "Processing (latest stable recommended)",
                     "Blender (latest LTS recommended)",
@@ -626,6 +669,86 @@
                         row.appendChild(actions);
                         slidesContainer.appendChild(row);
                     });
+                }
+            }
+
+            // Tutorials (YouTube)
+            if (config.tutorials) {
+                const tutorialsHeading = document.getElementById("tutorials-heading");
+                const tutorialsNote = document.getElementById("tutorials-note");
+                const tutorialsContainer = document.getElementById("tutorials-container");
+                const tutPreviewTitle = document.getElementById("tutorials-preview-title");
+                const tutPreviewFrame = document.getElementById("tutorials-preview-frame");
+                const tutPreviewEmpty = document.getElementById("tutorials-preview-empty");
+
+                function youtubeEmbedUrl(videoId) {
+                    return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
+                }
+
+                function loadTutorialPreview(videoId, label) {
+                    if (!tutPreviewFrame || !videoId) return;
+                    if (tutPreviewTitle) tutPreviewTitle.textContent = label || "Tutorial video";
+                    if (tutPreviewEmpty) tutPreviewEmpty.classList.add("hidden");
+                    tutPreviewFrame.classList.remove("hidden");
+                    tutPreviewFrame.src = youtubeEmbedUrl(videoId);
+                    const panel = document.getElementById("tutorials-preview-panel");
+                    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+
+                if (tutorialsHeading && config.tutorials.heading) {
+                    tutorialsHeading.textContent = config.tutorials.heading;
+                }
+                if (tutorialsNote) tutorialsNote.textContent = config.tutorials.note || "";
+
+                if (tutorialsContainer) {
+                    tutorialsContainer.innerHTML = "";
+                    (config.tutorials.videos || []).forEach(video => {
+                        const row = document.createElement("div");
+                        row.className = "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50";
+                        const label = `Week ${video.week} — ${video.title}`;
+                        const actions = document.createElement("div");
+                        actions.className = "flex items-center flex-wrap gap-2";
+
+                        if (video.youtubeId) {
+                            const watchBtn = document.createElement("button");
+                            watchBtn.type = "button";
+                            watchBtn.className = "text-sm font-medium bg-black text-white hover:bg-gray-800 px-3 py-1.5 rounded whitespace-nowrap";
+                            watchBtn.innerHTML = `<i class="fab fa-youtube mr-1"></i>Watch`;
+                            watchBtn.addEventListener("click", () => loadTutorialPreview(video.youtubeId, label));
+                            actions.appendChild(watchBtn);
+
+                            const openLink = document.createElement("a");
+                            openLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(video.youtubeId)}`;
+                            openLink.target = "_blank";
+                            openLink.rel = "noopener noreferrer";
+                            openLink.className = "text-sm font-medium text-black hover:underline whitespace-nowrap px-1";
+                            openLink.innerHTML = `<i class="fas fa-external-link-alt mr-1"></i>YouTube`;
+                            actions.appendChild(openLink);
+                        } else {
+                            const soon = document.createElement("span");
+                            soon.className = "inline-flex items-center gap-1.5 text-sm text-gray-400";
+                            soon.innerHTML = `<i class="fab fa-youtube"></i> Coming soon`;
+                            actions.appendChild(soon);
+                        }
+
+                        row.innerHTML = `
+                            <div>
+                                <span class="inline-block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Week ${escapeHtml(String(video.week))}</span>
+                                <h3 class="font-semibold text-gray-800">${escapeHtml(video.title)}</h3>
+                            </div>
+                        `;
+                        row.appendChild(actions);
+                        tutorialsContainer.appendChild(row);
+                    });
+
+                    if (config.tutorials.comingSoon && !(config.tutorials.videos || []).some(v => v.youtubeId)) {
+                        if (tutPreviewEmpty) {
+                            tutPreviewEmpty.innerHTML = `
+                                <i class="fab fa-youtube text-4xl text-gray-300"></i>
+                                <p>Online tutorial videos are <span class="font-semibold">coming soon</span>.</p>
+                            `;
+                        }
+                    }
                 }
             }
 
