@@ -1,0 +1,16 @@
+{
+  "name": "sshd1014-fundamental-visualisation-skills",
+  "version": "1.0.0",
+  "description": "SHDH1014 Fundamental Visualisation Skills course website",
+  "main": "index.js",
+  "scripts": {
+    "export-slides": "./export-slides.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@marp-team/marp-cli": "^4.5.1"
+  }
+}
