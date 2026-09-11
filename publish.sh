@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Publish SHDH1014 course site to GitHub Pages.
-# Repo: https://github.com/Lazaruschan/2026-1-SSHD1014-FUNDAMENTAL-VISUALISATION-SKILLS-Group-A01-
+# Repo: https://github.com/Lazaruschan/2026-1-SSHD1014-FUNDAMENTAL-VISUALISATION-SKILLS-Group-A03-
 #
 # Usage:
 #   cd Github/SSHD1014
@@ -14,7 +14,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
-REPO_URL="https://github.com/Lazaruschan/2026-1-SSHD1014-FUNDAMENTAL-VISUALISATION-SKILLS-Group-A01-.git"
+REPO_URL="https://github.com/Lazaruschan/2026-1-SSHD1014-FUNDAMENTAL-VISUALISATION-SKILLS-Group-A03-.git"
 BRANCH="main"
 REMOTE="origin"
 
@@ -98,7 +98,7 @@ fi
 echo "==> Pushing to $REMOTE/$BRANCH"
 git push -u "$REMOTE" "$BRANCH"
 
-PAGES_URL="https://lazaruschan.github.io/2026-1-SSHD1014-FUNDAMENTAL-VISUALISATION-SKILLS-Group-A01-/"
+PAGES_URL="https://lazaruschan.github.io/2026-1-SSHD1014-FUNDAMENTAL-VISUALISATION-SKILLS-Group-A03-/"
 echo ""
 echo "Done."
 echo "Enable Pages (once): repo Settings → Pages → Deploy from branch → main / (root)"
