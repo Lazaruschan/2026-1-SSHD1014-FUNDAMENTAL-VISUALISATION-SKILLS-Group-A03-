@@ -10,6 +10,7 @@
   const PASSWORD_HASH =
     "42ae5e4320ec6866cfdc6fd5fccb3d50354032aa0730bbb49a8487cc6fb8ba88";
   const STORAGE_KEY = "sshd1014_site_unlocked";
+  // Course code must be SSHD1014 (not SHDH1014)
   const TITLE = "SSHD1014 Fundamental Visualisation Skills";
 
   function inSlidesFolder() {
