@@ -25,7 +25,7 @@ rsync -a --delete "$SRC/images/" "$OUT/images/"
 
 HTML_FILES=()
 
-for md in "$SRC"/SHDH1014_Fundamental_Visualisation_Skills_MID_week_*.md; do
+for md in "$SRC"/SSHD1014_Fundamental_Visualisation_Skills_MID_week_*.md; do
   [[ -f "$md" ]] || continue
   base="$(basename "$md")"
   num="$(echo "$base" | sed -E 's/.*week_([0-9]+).*/\1/')"
