@@ -1,5 +1,5 @@
 /**
- * Client-side password gate for the SHDH1014 static site.
+ * Client-side password gate for the SSHD1014 static site.
  * Not true security (password check runs in the browser) — use for casual course access only.
  *
  * Default password: 20261014
@@ -10,7 +10,7 @@
   const PASSWORD_HASH =
     "42ae5e4320ec6866cfdc6fd5fccb3d50354032aa0730bbb49a8487cc6fb8ba88";
   const STORAGE_KEY = "sshd1014_site_unlocked";
-  const TITLE = "SHDH1014 Fundamental Visualisation Skills";
+  const TITLE = "SSHD1014 Fundamental Visualisation Skills";
 
   function inSlidesFolder() {
     return /\/slides(\/|$)/.test(location.pathname);

@@ -1,7 +1,7 @@
 {
   "name": "sshd1014-fundamental-visualisation-skills",
   "version": "1.0.0",
-  "description": "SHDH1014 Fundamental Visualisation Skills course website",
+  "description": "SSHD1014 Fundamental Visualisation Skills course website",
   "main": "index.js",
   "scripts": {
     "export-slides": "./export-slides.sh"
