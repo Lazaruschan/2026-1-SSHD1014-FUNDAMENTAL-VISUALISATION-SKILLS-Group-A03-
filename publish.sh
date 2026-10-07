@@ -6,6 +6,9 @@
 #   cd Github/SSHD1014
 #   ./publish.sh
 #
+# Windows:
+#   publish.bat
+#
 # Use a GitHub Personal Access Token when asked for "Password" (not your account password).
 # After push: Settings → Pages → Deploy from branch → main / (root)
 
@@ -63,6 +66,7 @@ TO_ADD=(
   assets
   slides
   publish.sh
+  publish.bat
   export-slides.sh
   embed-slide-assets.py
   package.json
