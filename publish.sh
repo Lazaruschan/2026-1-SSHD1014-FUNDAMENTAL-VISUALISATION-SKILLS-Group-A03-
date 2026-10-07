@@ -59,6 +59,7 @@ TO_ADD=(
   .nojekyll
   index.html
   auth.js
+  cart-game.js
   assets
   slides
   publish.sh

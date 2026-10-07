@@ -16,6 +16,80 @@
         .tab-content.active {
             display: block;
         }
+
+        .cart-blank {
+            display: inline-block;
+            min-width: 1.5em;
+            margin: 0 0.15em;
+            padding: 0 0.35em;
+            background: #C5A059;
+            color: #111;
+            font-weight: 800;
+            border-radius: 3px;
+            text-align: center;
+        }
+
+        #cart-code {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        #tutorials-sync-host {
+            position: fixed;
+            width: 320px;
+            height: 180px;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #tutorials-player-wrap iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        #tutorials-container .is-playing {
+            border-color: #000;
+            background: #fff;
+        }
+
+        .cart-overlay {
+            display: none;
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 0.75rem;
+        }
+
+        .cart-overlay.is-open {
+            display: flex;
+        }
+
+        .cart-mode {
+            border: 1px solid #d1d5db;
+            background: #fff;
+            color: #374151;
+            border-radius: 999px;
+            padding: 0.3rem 0.75rem;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .cart-mode.is-selected {
+            background: #111;
+            border-color: #111;
+            color: #fff;
+        }
     </style>
     <script src="auth.js?v=20260912-sshd" defer></script>
 </head>
@@ -153,7 +227,10 @@
         <!-- TUTORIALS TAB -->
         <div id="tutorials" class="tab-content space-y-6">
             <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h2 id="tutorials-heading" class="text-2xl font-bold text-black mb-2">Online Tutorials</h2>
+                <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                    <h2 id="tutorials-heading" class="text-2xl font-bold text-black">Online Tutorials</h2>
+                    <p id="tutorials-sync" class="text-xs text-gray-500 sm:pt-2" aria-live="polite"></p>
+                </div>
                 <p id="tutorials-note" class="text-gray-600 mb-6"></p>
                 <div id="tutorials-container" class="grid gap-3">
                     <!-- Populated by JS -->
@@ -171,30 +248,91 @@
                 <div id="tutorials-preview-empty"
                     class="aspect-video bg-gray-100 flex flex-col items-center justify-center text-gray-500 text-sm p-6 text-center gap-3">
                     <i class="fab fa-youtube text-4xl text-gray-300"></i>
-                    <p>Online tutorial videos are <span class="font-semibold">coming soon</span>.</p>
+                    <p>Select a video above to watch it here.</p>
                 </div>
-                <iframe id="tutorials-preview-frame" title="Tutorial video preview"
-                    class="hidden w-full aspect-video bg-black border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
+                <div id="tutorials-player-wrap" class="hidden w-full aspect-video bg-black">
+                    <div id="tutorials-player"></div>
+                </div>
+            </div>
+            <div id="tutorials-sync-host" aria-hidden="true">
+                <div id="tutorials-sync-player"></div>
             </div>
         </div>
 
         <!-- RESOURCES TAB -->
-        <div id="resources" class="tab-content space-y-8">
-            <section id="resources-downloads"
-                class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 border-t-4 border-t-black">
-                <!-- Populated by JS -->
-            </section>
-
-            <div class="grid md:grid-cols-1 gap-6">
-                <section class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2">
-                        <i class="fas fa-laptop-code text-gray-600"></i> Software Requirements
-                    </h3>
-                    <ul id="software-list" class="space-y-3 text-sm text-gray-700">
+        <div id="resources" class="tab-content">
+            <div class="grid lg:grid-cols-2 gap-6 items-start">
+                <div class="min-w-0 space-y-6">
+                    <section id="resources-downloads"
+                        class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 border-t-4 border-t-black">
                         <!-- Populated by JS -->
-                    </ul>
+                    </section>
+
+                    <section class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2 flex items-center gap-2">
+                            <i class="fas fa-laptop-code text-gray-600"></i> Software Requirements
+                        </h3>
+                        <ul id="software-list" class="space-y-3 text-sm text-gray-700">
+                            <!-- Populated by JS -->
+                        </ul>
+                    </section>
+                </div>
+
+                <section id="cart-race"
+                    class="min-w-0 bg-white p-6 rounded-lg shadow-sm border border-gray-200 border-t-4 border-t-[#C5A059]">
+                    <div class="flex items-start justify-between gap-3 mb-3">
+                        <div>
+                            <span class="inline-block px-2 py-1 bg-[#C5A059]/20 text-gray-900 text-xs font-bold rounded mb-2">Practice</span>
+                            <h2 class="text-xl font-bold text-gray-800">Cart Code Race</h2>
+                            <p class="text-gray-600 text-sm mt-1 leading-relaxed">The question stays up. Every race draws a new set from the pool. Steer into the box with the right code before the blue AI kart takes it.</p>
+                        </div>
+                    </div>
+                    <div id="cart-modes" class="flex flex-wrap gap-1.5 mb-3" role="group" aria-label="Difficulty">
+                        <button type="button" data-difficulty="easy" class="cart-mode">Easy</button>
+                        <button type="button" data-difficulty="normal" class="cart-mode is-selected">Normal</button>
+                        <button type="button" data-difficulty="hard" class="cart-mode">Hard</button>
+                        <button type="button" data-difficulty="extreme" class="cart-mode">Extreme</button>
+                    </div>
+                    <div class="flex items-center justify-between gap-3 mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        <span>You <span id="cart-you" class="text-red-600">0</span></span>
+                        <div id="cart-pips" class="flex gap-1" aria-hidden="true"></div>
+                        <span>AI <span id="cart-ai" class="text-blue-600">0</span></span>
+                    </div>
+                    <div id="cart-question" class="mb-3 rounded-md bg-gray-900 text-gray-100 p-3">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <p id="cart-topic" class="text-xs font-bold uppercase tracking-wider text-[#C5A059]"></p>
+                            <button type="button" id="cart-hint-btn" class="text-xs text-gray-300 underline flex-shrink-0">Hint</button>
+                        </div>
+                        <pre id="cart-code" class="overflow-x-auto"></pre>
+                        <p id="cart-hint" class="hidden text-xs text-gray-300 mt-2"></p>
+                        <p id="cart-feedback" class="text-xs mt-2 min-h-[1rem]" role="status" aria-live="polite"></p>
+                    </div>
+                    <div id="cart-stage" class="relative rounded-lg overflow-hidden border border-gray-800 bg-[#143024]">
+                        <canvas id="cart-canvas" class="block w-full h-[400px]" width="640" height="400" aria-label="Cart race track"></canvas>
+                        <div id="cart-ready" class="cart-overlay is-open">
+                            <div class="bg-white rounded-lg p-5 max-w-sm text-center shadow-lg">
+                                <p class="text-xs font-bold uppercase tracking-wider text-[#8a6a2f] mb-1">Answer boxes</p>
+                                <h3 class="text-lg font-bold text-gray-900 mb-2">Hit the right line of code</h3>
+                                <p class="text-sm text-gray-600 mb-4">Arrow keys or A / D. Drive into the box that fills the blank. The blue kart is racing for it too.</p>
+                                <button type="button" id="cart-start" class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded font-medium text-sm">Start race</button>
+                            </div>
+                        </div>
+                        <div id="cart-finish" class="cart-overlay">
+                            <div class="bg-white rounded-lg p-5 max-w-sm text-center shadow-lg">
+                                <p class="text-xs font-bold uppercase tracking-wider text-[#8a6a2f] mb-1">Finish</p>
+                                <h3 id="cart-finish-title" class="text-lg font-bold text-gray-900 mb-2">Sketch complete</h3>
+                                <p id="cart-finish-text" class="text-sm text-gray-600 mb-4"></p>
+                                <button type="button" id="cart-replay" class="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded font-medium text-sm">Race again</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex items-center justify-between gap-3">
+                        <p class="text-xs text-gray-500 leading-relaxed">Stay on the asphalt. Blanks follow <a href="assets/textbooks/Introduction-to-Processing.pdf" target="_blank" rel="noopener noreferrer" class="underline text-gray-700">Introduction to Processing</a>.</p>
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button type="button" id="cart-left" class="touch-none w-10 h-10 rounded border border-gray-300 text-lg font-bold hover:bg-gray-100" aria-label="Steer left">←</button>
+                            <button type="button" id="cart-right" class="touch-none w-10 h-10 rounded border border-gray-300 text-lg font-bold hover:bg-gray-100" aria-label="Steer right">→</button>
+                        </div>
+                    </div>
                 </section>
             </div>
         </div>
@@ -353,22 +491,12 @@
             // --- Online Tutorials (YouTube) ---
             tutorials: {
                 heading: "Online Tutorials",
-                note: "Week-by-week YouTube tutorials will be posted here. Later sessions are coming soon.",
-                comingSoon: true,
-                videos: [
-                    { week: 1, title: "Digital Production in the 21st Century" },
-                    { week: 2, title: "Shape, Form, Colour and Symbol in Design", youtubeId: "hIobCNFLd7g" },
-                    { week: 3, title: "Visualisation and Basic Design Principles" },
-                    { week: 4, title: "Digital Imaging and Basic Programming I" },
-                    { week: 5, title: "Basics of Programming II" },
-                    { week: 6, title: "Basics of Programming III" },
-                    { week: 7, title: "Image Processing with Code" },
-                    { week: 8, title: "Perspectives: History & Spatial Seeing" },
-                    { week: 9, title: "Perspectives: Constructing Depth" },
-                    { week: 10, title: "Perspectives: Multi-Point & Material Depth" },
-                    { week: 11, title: "Designers and AI Collaboration" },
-                    { week: 12, title: "Assignment 3 Consultation" },
-                    { week: 13, title: "Final Presentation" }
+                note: "Every video in the course playlist is listed here, in playlist order. The list updates from YouTube while this tab is open.",
+                playlists: [
+                    {
+                        title: "SSHD1014 Fundamental Visualisation Skills",
+                        playlistId: "PLJY9Qw8yRIMQ"
+                    }
                 ]
             },
 
@@ -376,7 +504,7 @@
             resources: {
                 badge: "Course Materials",
                 title: "Slides & Reading",
-                description: "Download tutorial worksheets here, open HTML lecture slides (weeks 1–11) from the Slides tab, and open the Introduction to Processing textbook below.",
+                description: "Download tutorial worksheets and Processing examples here, open HTML lecture slides (weeks 1–11) from the Slides tab, and open the Introduction to Processing textbook below. The cart beside this panel asks you to fill in that sketch.",
                 repoUrl: "assets/textbooks/Introduction-to-Processing.pdf",
                 repoLabel: "Open Introduction to Processing (PDF)",
                 downloads: [
@@ -384,6 +512,11 @@
                         label: "Week 2 Outing Worksheet (PDF)",
                         url: "assets/worksheets/Week02_Outing_Worksheet.pdf",
                         icon: "fas fa-file-pdf"
+                    },
+                    {
+                        label: "Processing Examples (ZIP)",
+                        url: "assets/examples/Processing_Example.zip",
+                        icon: "fas fa-file-archive"
                     }
                 ],
                 software: [
@@ -678,83 +811,358 @@
                 }
             }
 
-            // Tutorials (YouTube)
+            // Tutorials (YouTube playlist, refreshed while the tab is open)
             if (config.tutorials) {
                 const tutorialsHeading = document.getElementById("tutorials-heading");
                 const tutorialsNote = document.getElementById("tutorials-note");
                 const tutorialsContainer = document.getElementById("tutorials-container");
+                const tutorialsSync = document.getElementById("tutorials-sync");
                 const tutPreviewTitle = document.getElementById("tutorials-preview-title");
-                const tutPreviewFrame = document.getElementById("tutorials-preview-frame");
                 const tutPreviewEmpty = document.getElementById("tutorials-preview-empty");
-
-                function youtubeEmbedUrl(videoId) {
-                    return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
-                }
-
-                function loadTutorialPreview(videoId, label) {
-                    if (!tutPreviewFrame || !videoId) return;
-                    if (tutPreviewTitle) tutPreviewTitle.textContent = label || "Tutorial video";
-                    if (tutPreviewEmpty) tutPreviewEmpty.classList.add("hidden");
-                    tutPreviewFrame.classList.remove("hidden");
-                    tutPreviewFrame.src = youtubeEmbedUrl(videoId);
-                    const panel = document.getElementById("tutorials-preview-panel");
-                    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-                }
+                const tutPlayerWrap = document.getElementById("tutorials-player-wrap");
+                const metaCache = new Map();
+                let tutPlayer = null;
+                let syncPlayer = null;
+                let syncToken = 0;
+                let syncInFlight = null;
+                let pollTimer = null;
+                let playlistSignature = "";
 
                 if (tutorialsHeading && config.tutorials.heading) {
                     tutorialsHeading.textContent = config.tutorials.heading;
                 }
                 if (tutorialsNote) tutorialsNote.textContent = config.tutorials.note || "";
 
-                if (tutorialsContainer) {
-                    tutorialsContainer.innerHTML = "";
-                    (config.tutorials.videos || []).forEach(video => {
-                        const row = document.createElement("div");
-                        row.className = "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border border-gray-200 rounded-lg bg-gray-50";
-                        const label = `Week ${video.week} — ${video.title}`;
-                        const actions = document.createElement("div");
-                        actions.className = "flex items-center flex-wrap gap-2";
+                function setSyncStatus(text) {
+                    if (tutorialsSync) tutorialsSync.textContent = text || "";
+                }
 
-                        if (video.youtubeId) {
+                function loadYouTubeAPI() {
+                    if (window.YT && window.YT.Player) return Promise.resolve();
+                    return new Promise((resolve) => {
+                        const previous = window.onYouTubeIframeAPIReady;
+                        window.onYouTubeIframeAPIReady = function () {
+                            if (typeof previous === "function") previous();
+                            resolve();
+                        };
+                        if (!document.getElementById("youtube-iframe-api")) {
+                            const script = document.createElement("script");
+                            script.id = "youtube-iframe-api";
+                            script.src = "https://www.youtube.com/iframe_api";
+                            document.head.appendChild(script);
+                        }
+                    });
+                }
+
+                function readPlaylistIds(player) {
+                    try {
+                        const ids = player && player.getPlaylist && player.getPlaylist();
+                        return Array.isArray(ids) ? ids.filter(Boolean) : [];
+                    } catch (_) {
+                        return [];
+                    }
+                }
+
+                function createSyncPlayer(playlistId) {
+                    return new Promise((resolve) => {
+                        const token = ++syncToken;
+                        if (syncPlayer && typeof syncPlayer.destroy === "function") {
+                            try { syncPlayer.destroy(); } catch (_) {}
+                        }
+                        syncPlayer = null;
+                        const host = document.getElementById("tutorials-sync-host");
+                        if (!host) {
+                            resolve([]);
+                            return;
+                        }
+                        host.innerHTML = '<div id="tutorials-sync-player"></div>';
+                        let settled = false;
+                        const finish = (ids) => {
+                            if (settled || token !== syncToken) return;
+                            settled = true;
+                            window.clearInterval(timer);
+                            resolve(ids || []);
+                        };
+                        const timer = window.setInterval(() => {
+                            const ids = readPlaylistIds(syncPlayer);
+                            if (ids.length) finish(ids);
+                        }, 300);
+                        window.setTimeout(() => finish(readPlaylistIds(syncPlayer)), 12000);
+                        const playerVars = {
+                            listType: "playlist",
+                            list: playlistId,
+                            autoplay: 0,
+                            controls: 0,
+                            disablekb: 1,
+                            fs: 0,
+                            modestbranding: 1,
+                            rel: 0,
+                            playsinline: 1
+                        };
+                        if (location.protocol === "http:" || location.protocol === "https:") {
+                            playerVars.origin = location.origin;
+                        }
+                        syncPlayer = new YT.Player("tutorials-sync-player", {
+                            width: "320",
+                            height: "180",
+                            playerVars,
+                            events: {
+                                onReady(event) {
+                                    const frame = event.target.getIframe && event.target.getIframe();
+                                    if (frame) frame.tabIndex = -1;
+                                    const ids = readPlaylistIds(event.target);
+                                    if (ids.length) finish(ids);
+                                }
+                            }
+                        });
+                    });
+                }
+
+                async function videoMeta(id) {
+                    if (metaCache.has(id)) return metaCache.get(id);
+                    const thumbnail = `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
+                    try {
+                        const endpoint = `https://www.youtube.com/oembed?format=json&url=${encodeURIComponent("https://www.youtube.com/watch?v=" + id)}`;
+                        const response = await fetch(endpoint);
+                        if (!response.ok) throw new Error(String(response.status));
+                        const data = await response.json();
+                        const meta = {
+                            title: data.title || "Tutorial video",
+                            thumbnail: data.thumbnail_url || thumbnail
+                        };
+                        metaCache.set(id, meta);
+                        return meta;
+                    } catch (_) {
+                        return { title: "Tutorial video", thumbnail };
+                    }
+                }
+
+                function currentVideoId() {
+                    try {
+                        const data = tutPlayer && tutPlayer.getVideoData && tutPlayer.getVideoData();
+                        return (data && data.video_id) || "";
+                    } catch (_) {
+                        return "";
+                    }
+                }
+
+                function highlightVideo(videoId) {
+                    if (!tutorialsContainer) return;
+                    let title = "";
+                    tutorialsContainer.querySelectorAll("[data-video-id]").forEach((row) => {
+                        const playing = row.dataset.videoId === videoId;
+                        row.classList.toggle("is-playing", playing);
+                        if (playing) title = row.dataset.title || "";
+                    });
+                    if (title && tutPreviewTitle) tutPreviewTitle.textContent = title;
+                }
+
+                function playTutorial(playlistId, index, title) {
+                    if (tutPreviewTitle) tutPreviewTitle.textContent = title || "Tutorial";
+                    if (tutPreviewEmpty) tutPreviewEmpty.classList.add("hidden");
+                    if (tutPlayerWrap) tutPlayerWrap.classList.remove("hidden");
+                    const panel = document.getElementById("tutorials-preview-panel");
+                    if (panel) panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+                    const cue = () => {
+                        if (!tutPlayer || typeof tutPlayer.loadPlaylist !== "function") return;
+                        tutPlayer.loadPlaylist({ listType: "playlist", list: playlistId, index });
+                    };
+
+                    loadYouTubeAPI().then(() => {
+                        if (!tutPlayer) {
+                            const playerVars = {
+                                autoplay: 1,
+                                rel: 0,
+                                modestbranding: 1,
+                                playsinline: 1
+                            };
+                            if (location.protocol === "http:" || location.protocol === "https:") {
+                                playerVars.origin = location.origin;
+                            }
+                            tutPlayer = new YT.Player("tutorials-player", {
+                                playerVars,
+                                events: {
+                                    onReady() { cue(); },
+                                    onStateChange(event) {
+                                        const data = event.target.getVideoData && event.target.getVideoData();
+                                        if (data && data.video_id) highlightVideo(data.video_id);
+                                    }
+                                }
+                            });
+                            return;
+                        }
+                        cue();
+                    });
+                }
+
+                function renderMessage(message, playlist) {
+                    if (!tutorialsContainer) return;
+                    tutorialsContainer.innerHTML = "";
+                    const row = document.createElement("div");
+                    row.className = "p-4 border border-gray-200 rounded-lg bg-gray-50 text-sm text-gray-600";
+                    row.textContent = message;
+                    if (playlist && playlist.playlistId) {
+                        const link = document.createElement("a");
+                        link.href = `https://www.youtube.com/playlist?list=${encodeURIComponent(playlist.playlistId)}`;
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+                        link.className = "ml-2 font-medium text-black underline";
+                        link.textContent = "Open on YouTube";
+                        row.appendChild(link);
+                    }
+                    tutorialsContainer.appendChild(row);
+                }
+
+                function renderPlaylists(blocks) {
+                    if (!tutorialsContainer) return;
+                    tutorialsContainer.innerHTML = "";
+                    blocks.forEach((block) => {
+                        const playlist = block.playlist;
+                        const videos = block.videos;
+                        const section = document.createElement("div");
+                        section.className = "grid gap-3";
+
+                        const head = document.createElement("div");
+                        head.className = "flex flex-col sm:flex-row sm:items-center justify-between gap-2";
+                        const label = document.createElement("p");
+                        label.className = "text-sm text-gray-600";
+                        const count = videos.length;
+                        label.textContent = playlist.title
+                            ? `${playlist.title} · ${count} video${count === 1 ? "" : "s"}`
+                            : `${count} video${count === 1 ? "" : "s"}`;
+                        const openLink = document.createElement("a");
+                        openLink.href = `https://www.youtube.com/playlist?list=${encodeURIComponent(playlist.playlistId)}`;
+                        openLink.target = "_blank";
+                        openLink.rel = "noopener noreferrer";
+                        openLink.className = "text-sm font-medium text-black hover:underline whitespace-nowrap";
+                        openLink.innerHTML = `<i class="fas fa-external-link-alt mr-1"></i>Open playlist`;
+                        head.appendChild(label);
+                        head.appendChild(openLink);
+                        section.appendChild(head);
+
+                        videos.forEach((video, index) => {
+                            const row = document.createElement("div");
+                            row.className = "flex flex-col sm:flex-row sm:items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50";
+                            row.dataset.videoId = video.id;
+                            row.dataset.title = video.title;
+
+                            const thumb = document.createElement("img");
+                            thumb.src = video.thumbnail;
+                            thumb.alt = "";
+                            thumb.className = "w-full sm:w-40 aspect-video object-cover rounded bg-gray-200 flex-shrink-0";
+
+                            const copy = document.createElement("div");
+                            copy.className = "min-w-0 flex-1";
+                            const indexLabel = document.createElement("span");
+                            indexLabel.className = "inline-block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1";
+                            indexLabel.textContent = String(index + 1).padStart(2, "0");
+                            const title = document.createElement("h3");
+                            title.className = "font-semibold text-gray-800";
+                            title.textContent = video.title;
+                            copy.appendChild(indexLabel);
+                            copy.appendChild(title);
+
+                            const actions = document.createElement("div");
+                            actions.className = "flex items-center flex-wrap gap-2";
                             const watchBtn = document.createElement("button");
                             watchBtn.type = "button";
                             watchBtn.className = "text-sm font-medium bg-black text-white hover:bg-gray-800 px-3 py-1.5 rounded whitespace-nowrap";
                             watchBtn.innerHTML = `<i class="fab fa-youtube mr-1"></i>Watch`;
-                            watchBtn.addEventListener("click", () => loadTutorialPreview(video.youtubeId, label));
+                            watchBtn.addEventListener("click", () => playTutorial(playlist.playlistId, index, video.title));
+                            const videoLink = document.createElement("a");
+                            videoLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(video.id)}&list=${encodeURIComponent(playlist.playlistId)}`;
+                            videoLink.target = "_blank";
+                            videoLink.rel = "noopener noreferrer";
+                            videoLink.className = "text-sm font-medium text-black hover:underline whitespace-nowrap px-1";
+                            videoLink.innerHTML = `<i class="fas fa-external-link-alt mr-1"></i>YouTube`;
                             actions.appendChild(watchBtn);
+                            actions.appendChild(videoLink);
 
-                            const openLink = document.createElement("a");
-                            openLink.href = `https://www.youtube.com/watch?v=${encodeURIComponent(video.youtubeId)}`;
-                            openLink.target = "_blank";
-                            openLink.rel = "noopener noreferrer";
-                            openLink.className = "text-sm font-medium text-black hover:underline whitespace-nowrap px-1";
-                            openLink.innerHTML = `<i class="fas fa-external-link-alt mr-1"></i>YouTube`;
-                            actions.appendChild(openLink);
-                        } else {
-                            const soon = document.createElement("span");
-                            soon.className = "inline-flex items-center gap-1.5 text-sm text-gray-400";
-                            soon.innerHTML = `<i class="fab fa-youtube"></i> Coming soon`;
-                            actions.appendChild(soon);
-                        }
+                            row.appendChild(thumb);
+                            row.appendChild(copy);
+                            row.appendChild(actions);
+                            section.appendChild(row);
+                        });
 
-                        row.innerHTML = `
-                            <div>
-                                <span class="inline-block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">Week ${escapeHtml(String(video.week))}</span>
-                                <h3 class="font-semibold text-gray-800">${escapeHtml(video.title)}</h3>
-                            </div>
-                        `;
-                        row.appendChild(actions);
-                        tutorialsContainer.appendChild(row);
+                        tutorialsContainer.appendChild(section);
                     });
+                    highlightVideo(currentVideoId());
+                }
 
-                    if (config.tutorials.comingSoon && !(config.tutorials.videos || []).some(v => v.youtubeId)) {
-                        if (tutPreviewEmpty) {
-                            tutPreviewEmpty.innerHTML = `
-                                <i class="fab fa-youtube text-4xl text-gray-300"></i>
-                                <p>Online tutorial videos are <span class="font-semibold">coming soon</span>.</p>
-                            `;
+                async function syncTutorials() {
+                    if (syncInFlight) return syncInFlight;
+                    const run = (async () => {
+                        const playlists = (config.tutorials.playlists || []).filter((playlist) => playlist.playlistId);
+                        if (!playlists.length) {
+                            renderMessage("No playlist is configured.");
+                            setSyncStatus("");
+                            return;
                         }
-                    }
+                        if (!playlistSignature) setSyncStatus("Loading videos from YouTube…");
+                        try {
+                            await loadYouTubeAPI();
+                            const blocks = [];
+                            for (const playlist of playlists) {
+                                const ids = await createSyncPlayer(playlist.playlistId);
+                                if (!ids.length) {
+                                    playlistSignature = "";
+                                    renderMessage("The playlist could not be read yet. This page will keep checking.", playlist);
+                                    setSyncStatus("Waiting for YouTube…");
+                                    return;
+                                }
+                                const metas = await Promise.all(ids.map((id) => videoMeta(id)));
+                                blocks.push({
+                                    playlist,
+                                    videos: ids.map((id, index) => ({
+                                        id,
+                                        title: metas[index].title,
+                                        thumbnail: metas[index].thumbnail
+                                    }))
+                                });
+                            }
+                            const signature = blocks.map((block) => (
+                                `${block.playlist.playlistId}:${block.videos.map((video) => video.id + "|" + video.title).join(",")}`
+                            )).join("||");
+                            const total = blocks.reduce((sum, block) => sum + block.videos.length, 0);
+                            if (signature !== playlistSignature) {
+                                playlistSignature = signature;
+                                renderPlaylists(blocks);
+                            }
+                            setSyncStatus(`${total} video${total === 1 ? "" : "s"} · live from YouTube`);
+                        } catch (_) {
+                            if (!playlistSignature) {
+                                renderMessage("The playlist could not be read yet. This page will keep checking.", playlists[0]);
+                            }
+                            setSyncStatus("Waiting for YouTube…");
+                        }
+                    })();
+                    syncInFlight = run.finally(() => {
+                        syncInFlight = null;
+                    });
+                    return syncInFlight;
+                }
+
+                window.syncTutorials = syncTutorials;
+
+                function ensureTutorialPolling() {
+                    if (pollTimer) return;
+                    pollTimer = window.setInterval(() => {
+                        const panel = document.getElementById("tutorials");
+                        if (!panel || !panel.classList.contains("active") || document.hidden) return;
+                        syncTutorials();
+                    }, 30000);
+                    document.addEventListener("visibilitychange", () => {
+                        const panel = document.getElementById("tutorials");
+                        if (document.hidden || !panel || !panel.classList.contains("active")) return;
+                        syncTutorials();
+                    });
+                }
+
+                ensureTutorialPolling();
+                const tutorialsPanel = document.getElementById("tutorials");
+                if (tutorialsPanel && tutorialsPanel.classList.contains("active")) {
+                    syncTutorials();
                 }
             }
 
@@ -823,6 +1231,11 @@
                 activeBtn.classList.remove("text-gray-500", "border-transparent");
                 activeBtn.classList.add("border-black", "text-black");
             }
+
+            if (window.CartRace) window.CartRace.setActive(tabId === "resources");
+            if (tabId === "tutorials" && typeof window.syncTutorials === "function") {
+                window.syncTutorials();
+            }
         }
 
         function escapeHtml(str) {
@@ -837,6 +1250,7 @@
             return escapeHtml(str).replace(/'/g, "&#39;");
         }
     </script>
+    <script src="cart-game.js?v=20261007-modes"></script>
 </body>
 
 </html>
